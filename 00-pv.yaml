@@ -1,0 +1,19 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume  # Sets PV's name
+  labels:
+    type: local  # Sets PV's type to local
+    app: postgres
+spec:
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Recycle
+  # persistentVolumeReclaimPolicy: Retain
+  # persistentVolumeReclaimPolicy: Delete
+  capacity:
+    storage: 5Gi # Sets PV Volume
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"

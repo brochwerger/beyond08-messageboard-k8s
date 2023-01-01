@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      app: beyond
+    name: beyond
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deployment: beyond
+    template:
+      metadata:
+        labels:
+          app: beyond
+          deployment: beyond
+      spec:
+        containers:
+        - image: quay.io/brochwer/beyond-psql
+          name: beyond
+          ports:
+          - containerPort: 8000
+            protocol: TCP
+          env:
+          - name: "POSTGRES_USER"
+            valueFrom:
+              secretKeyRef:
+                name: "db-credentials"
+                key: "username" 
+          - name: "POSTGRES_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: "db-credentials"
+                key: "password" 
+          - name: "POSTGRES_DB"
+            valueFrom:
+              secretKeyRef:
+                name: "db-credentials"
+                key: "database" 
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: beyond
+    name: beyond
+  spec:
+    type: NodePort
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    selector:
+      deployment: beyond

@@ -1,0 +1,1 @@
+oc new-app --image-stream=openshift/python --strategy=source "$GITHUB_REPO#b92" --name beyond09

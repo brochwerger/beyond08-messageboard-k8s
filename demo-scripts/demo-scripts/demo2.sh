@@ -44,7 +44,7 @@ if prompt "Step 3: Deploy application from github"
 then
     PATH_TO_SOURCE="$GITHUB_REPO"#"$BRANCH"
     set -x
-    oc new-app  $PATH_TO_SOURCE --name $APPNAME
+    oc new-app --image-stream=openshift/python "$GITHUB_REPO#$BRANCH" --name $APPNAME
     set +x
 fi
 
@@ -86,7 +86,7 @@ fi
 if prompt "Step 6: Deploy DB server. Rebuild (and redeploy) application"
 then
     set -x
-    oc new-app --labels app=beyond --name=dbserver -e POSTGRESQL_USER=beyond -e POSTGRESQL_PASSWORD=beyond -e POSTGRESQL_DATABASE=messages postgresql:latest
+    oc new-app --labels app=$APPNAME --name=dbserver -e POSTGRESQL_USER=beyond -e POSTGRESQL_PASSWORD=beyond -e POSTGRESQL_DATABASE=messages postgresql:latest
     sleep 5
     oc start-build $APPNAME
     set +x
